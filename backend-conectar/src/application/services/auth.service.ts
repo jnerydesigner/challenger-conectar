@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { UserService } from './user.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { jwtConstants } from '@infra/constants/jwt-constants';
+import { env } from '@infra/constants/zod-env.constant';
 
 @Injectable()
 export class AuthService {
@@ -34,7 +34,7 @@ export class AuthService {
 
     try {
       const token = await this.jwtService.signAsync(payload, {
-        secret: jwtConstants.secret,
+        secret: env.JWT_SECRET,
         expiresIn: '1d',
       });
       this.logger.log(token);
