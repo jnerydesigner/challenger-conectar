@@ -1,3 +1,4 @@
+import { AuthModule } from './auth.module';
 import { Module } from '@nestjs/common';
 
 import { ConfigModule } from '@nestjs/config';
@@ -25,6 +26,7 @@ import { UserModule } from './user.module';
     }),
     UserModule,
     HealthCheckModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

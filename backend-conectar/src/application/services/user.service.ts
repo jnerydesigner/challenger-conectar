@@ -112,4 +112,28 @@ export class UserService {
       .execute();
     this.logger.log(JSON.stringify('User deleted'));
   }
+
+  async findOneLogin(email: string) {
+    const existsUser = await this.usersRepository.findOne({
+      where: {
+        email,
+      },
+    });
+
+    if (!existsUser) {
+      this.logger.error('User Not Found');
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.NOT_FOUND,
+          message: 'User Not Found',
+          error: 'NotFound',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    this.logger.log(JSON.stringify(existsUser));
+
+    return existsUser;
+  }
 }

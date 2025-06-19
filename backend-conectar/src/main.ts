@@ -22,6 +22,7 @@ async function bootstrap() {
     SwaggerModule.createDocument(app, configSwagger);
   SwaggerModule.setup('api', app, documentFactory);
   app.useGlobalFilters(new AllExceptionsFilter());
+
   await app.listen(PORT, () => {
     logger.log(`Server Running in PORT = ${PORT}`);
   });
