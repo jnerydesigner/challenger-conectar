@@ -14,8 +14,25 @@
     "skipLibCheck": true,
     "strictNullChecks": true,
     "forceConsistentCasingInFileNames": true,
-    "noImplicitAny": false,
     "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "paths": {
+      "@application/*": [
+        "src/application/*"
+      ],
+      "@presenters/*": [
+        "src/presenters/*"
+      ],
+      "@domain/*": [
+        "src/domain/*"
+      ],
+      "@infra/*": [
+        "src/infra/*"
+      ]
+    }
   }
 }

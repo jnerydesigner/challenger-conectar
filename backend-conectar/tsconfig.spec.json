@@ -1,0 +1,14 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+      "baseUrl": ".",
+      "paths": {
+        "@application/*": ["src/application/*"],
+        "@presenters/*": ["src/presenters/*"],
+        "@domain/*": ["src/domain/*"],
+        "@infra/*": ["src/infra/*"]
+      }
+    },
+    "include": ["**/*.spec.ts", "**/*.test.ts"]
+  }
+  
