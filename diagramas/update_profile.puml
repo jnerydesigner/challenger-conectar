@@ -1,0 +1,14 @@
+@startuml
+actor Usuario
+participant "Frontend" as Front
+participant "Backend" as Back
+database "DB" as DB
+
+Usuario -> Front : Altera nome ou senha
+Front -> Back : PATCH /users/me (Authorization: Bearer JWT)
+Back -> Back : Verifica token
+Back -> DB : UPDATE users SET name=?, password_hash=? WHERE id=?
+DB --> Back : Confirma update
+Back --> Front : 200 OK
+Front --> Usuario : Exibe sucesso
+@enduml

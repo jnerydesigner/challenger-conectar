@@ -1,0 +1,15 @@
+@startuml
+actor Usuario
+participant "Frontend" as Front
+participant "Backend" as Back
+database "DB" as DB
+
+Usuario -> Front : Preenche email e senha
+Front -> Back : POST /auth/login
+Back -> DB : SELECT * FROM users WHERE email=...
+DB --> Back : Retorna usuário
+Back -> Back : Verifica senha com bcrypt
+Back -> Back : Gera token JWT
+Back --> Front : Retorna token JWT
+Front --> Usuario : Armazena token (ex: localStorage)
+@enduml

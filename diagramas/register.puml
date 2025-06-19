@@ -1,0 +1,13 @@
+@startuml
+actor User
+participant Frontend as Front
+participant Backend as Back
+database Database as DB
+
+User -> Front : Fill name, email, password
+Front -> Back : POST /auth/register
+Back -> DB : INSERT user data
+DB --> Back : Confirmation
+Back --> Front : 201 Created
+Front --> User : Redirect to login
+@enduml

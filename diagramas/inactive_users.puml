@@ -1,0 +1,14 @@
+@startuml
+actor Admin
+participant "Frontend" as Front
+participant "Backend" as Back
+database "DB" as DB
+
+Admin -> Front : Acessa /users/inativos
+Front -> Back : GET /users/inativos (Authorization: Bearer JWT)
+Back -> Back : Verifica token + role admin
+Back -> DB : SELECT * FROM users WHERE lastLogin <= NOW() - INTERVAL 30 DAYS
+DB --> Back : Retorna lista de inativos
+Back --> Front : JSON com usuários inativos
+Front --> Admin : Exibe usuários inativos
+@enduml

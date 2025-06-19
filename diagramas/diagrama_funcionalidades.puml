@@ -1,0 +1,42 @@
+@startuml
+!define RECTANGLE class
+
+rectangle "Tela de Login" {
+  [Login com email/senha]
+  [Login com Google/Microsoft]
+}
+
+rectangle "Cadastro de Usuário" {
+  [Formulário com nome, email, senha]
+}
+
+rectangle "Perfil do Usuário" {
+  [Visualizar dados]
+  [Editar nome/senha]
+}
+
+rectangle "Admin - Lista de Usuários" {
+  [Visualizar lista]
+  [Editar usuário]
+  [Excluir usuário]
+  [Filtrar por papel]
+  [Ordenar por nome/data]
+}
+
+rectangle "Backend API" {
+  [POST /auth/register]
+  [POST /auth/login]
+  [GET /users]
+  [GET /users/me]
+  [PATCH /users/:id]
+  [DELETE /users/:id]
+  [GET /users/inativos]
+}
+
+rectangle "Segurança e Testes" {
+  [JWT Auth]
+  [Bcrypt]
+  [Jest Tests]
+  [Swagger]
+}
+@enduml

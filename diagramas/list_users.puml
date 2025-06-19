@@ -1,0 +1,14 @@
+@startuml
+actor Admin
+participant "Frontend" as Front
+participant "Backend" as Back
+database "DB" as DB
+
+Admin -> Front : Acessa /users com token
+Front -> Back : GET /users (Authorization: Bearer JWT)
+Back -> Back : Verifica token + role admin
+Back -> DB : SELECT * FROM users
+DB --> Back : Retorna lista
+Back --> Front : Retorna lista JSON
+Front --> Admin : Renderiza tabela com filtros e ordenação
+@enduml
