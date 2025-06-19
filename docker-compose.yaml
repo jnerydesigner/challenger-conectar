@@ -1,0 +1,41 @@
+version: "3.5"
+
+services:
+  postgres_conectar:
+    image: postgres
+    container_name: postgres_conectar
+    volumes:
+      - postgres:/data/postgres
+    environment:
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_USER: root
+      POSTGRES_DB: conectar_db
+      PGDATA: /data/postgres
+    ports:
+      - "5448:5432"
+    networks:
+      - postgres
+    restart: unless-stopped
+
+  pgadmin_conectar:
+    container_name: pgadmin_conectar
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@email.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - "${PGADMIN_PORT:-5052}:80"
+    networks:
+      - postgres
+    restart: unless-stopped
+
+networks:
+  postgres:
+    driver: bridge
+
+volumes:
+  postgres:
+  pgadmin:
