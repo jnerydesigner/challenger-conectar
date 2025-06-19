@@ -10,7 +10,6 @@ import { UserModule } from './user.module';
 
 @Module({
   imports: [
-    AuthModule,
     ConfigModule.forRoot({
       envFilePath: '.env',
     }),
@@ -27,6 +26,7 @@ import { UserModule } from './user.module';
     }),
     UserModule,
     HealthCheckModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
