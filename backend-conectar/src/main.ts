@@ -4,9 +4,16 @@ import { ConfigService } from '@nestjs/config';
 import { Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AllExceptionsFilter } from '@infra/exceptions/all-exceptions-filters.exception';
+import cookieParser from 'cookie-parser';
+import { env } from '@infra/constants/zod-env.constant';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors({
+    origin: env.URL_FRONT_END,
+    credentials: true,
+  });
+  app.use(cookieParser());
   const config = new ConfigService();
   const PORT = config.get<number>('SERVER_PORT', 3334);
   const logger = new Logger('Initial Application');

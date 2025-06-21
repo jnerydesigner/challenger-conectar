@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PayloadDTO } from '@application/dtos/payload.dto';
 import { UserService } from '@application/services/user.service';
+import { env } from '@infra/constants/zod-env.constant';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -11,15 +12,22 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     config: ConfigService,
     private readonly userService: UserService,
   ) {
+    const jwtSecret = env.JWT_SECRET;
+    if (!jwtSecret) {
+      throw new Error('JWT_SECRET is not defined in configuration');
+    }
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: config.get<string>('JWT_SECRET') as string,
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (req) => req?.cookies?.['access_token'],
+      ]),
+      ignoreExpiration: false,
+      secretOrKey: jwtSecret,
     });
   }
 
   async validate(payload: PayloadDTO) {
     const user = await this.userService.findOne(payload.sub);
-    console.log(user);
+    console.log('User', user);
     const validateUser = {
       id: user.id,
       email: user.email,

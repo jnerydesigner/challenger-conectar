@@ -7,6 +7,7 @@ const envSchema = z.object({
     .enum(['development', 'production', 'test'])
     .default('development'),
   JWT_SECRET: z.string().min(8, 'JWT_SECRET is required and must be secure'),
+  URL_FRONT_END: z.string().url(),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);
