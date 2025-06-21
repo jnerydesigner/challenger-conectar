@@ -18,6 +18,7 @@ export class AuthService {
     const user = await this.usersService.findOneLogin(username);
 
     const comparePassword = await bcrypt.compare(pass, user.password);
+    console.log('Passowrd', user.password);
 
     if (!comparePassword) {
       throw new HttpException(
