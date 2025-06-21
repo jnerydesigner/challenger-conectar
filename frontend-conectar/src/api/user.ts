@@ -1,8 +1,13 @@
 import { UserTypes } from "@/types/user.types";
 import { api } from "./axios-api";
 
-export const usersFetch = async <T = unknown>(): Promise<T> => {
-  const { data: users } = await api.get<T>("/users");
+export const usersFetch = async <T = unknown>(
+  page: number,
+  limit: number
+): Promise<T> => {
+  const { data: users } = await api.get<T>(
+    `/users?page=${page}&limit=${limit}`
+  );
   return users;
 };
 
@@ -19,4 +24,8 @@ export const usersCreateFetch = async <T = unknown>({
     role,
   });
   return users;
+};
+
+export const userDeleteFetch = async (id: number): Promise<void> => {
+  await api.delete(`/users/${id}`);
 };
