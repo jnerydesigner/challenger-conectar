@@ -16,6 +16,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Role } from "@/types/role.enum";
 import { usersUpdateFetch } from "@/api/user";
 import { UserTypes } from "@/types/user.types";
+import { useToast } from "@/context/toast-context";
 
 const updateUserSchema = z.object({
   name: z.string(),
@@ -36,6 +37,7 @@ export function FormUpdateUser({
   user,
   ...props
 }: FormUpdateUserProps) {
+  const { showToast } = useToast();
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationKey: ["update-user"],
@@ -52,6 +54,22 @@ export function FormUpdateUser({
     },
     onSuccess: (data) => {
       console.log("Criação de Usuário bem sucedida:", data);
+      const date = new Date();
+      const formatted = new Intl.DateTimeFormat("pt-BR", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "2-digit",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      }).format(date);
+
+      showToast(
+        `Atualização do Usuário ${data.name} foi feita com sucesso.`,
+        formatted,
+        "success"
+      );
       onOpenChange(false);
       queryClient.invalidateQueries({
         queryKey: ["users-data"],
