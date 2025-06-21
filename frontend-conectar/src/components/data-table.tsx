@@ -1,12 +1,11 @@
 "use client";
 
 import {
-  ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-
+import { CustomColumnDef } from "@/types/custom-column-def";
 import {
   Table,
   TableBody,
@@ -17,7 +16,7 @@ import {
 } from "@/components/ui/table";
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
+  columns: CustomColumnDef<TData, TValue>[];
   data: TData[];
 }
 
@@ -36,28 +35,33 @@ export function DataTable<TData, TValue>({
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id} className="bg-gray-100">
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                );
-              })}
+            <TableRow key={headerGroup.id} className="bg-gray-200">
+              {headerGroup.headers.map((header) => (
+                <TableHead
+                  key={header.id}
+                  className={
+                    (header.column.columnDef as CustomColumnDef<TData, TValue>)
+                      .meta?.className
+                  }
+                >
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                </TableHead>
+              ))}
             </TableRow>
           ))}
         </TableHeader>
         <TableBody>
           {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
+            table.getRowModel().rows.map((row, index) => (
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
+                className={`${index % 2 === 0 ? "bg-gray-100" : "bg-gray-50"}`}
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id} className="text-center">

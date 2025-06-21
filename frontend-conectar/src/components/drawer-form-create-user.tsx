@@ -25,7 +25,7 @@ export const DrawerCreateUser = ({
           <DrawerTitle>Deseja Adicionar novo usuário</DrawerTitle>
           <DrawerDescription>This action cannot be undone.</DrawerDescription>
         </DrawerHeader>
-        <FormNewUser />
+        <FormNewUser onOpenChange={onOpenChange} />
         <DrawerFooter>
           <DrawerClose asChild>
             <Button variant="outline" className="ml-4 cursor-pointer">

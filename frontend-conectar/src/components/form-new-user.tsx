@@ -15,6 +15,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { Role } from "@/types/role.enum";
 import { usersCreateFetch } from "@/api/user";
+import { UserTypes } from "@/types/user.types";
 
 const createUserSchema = z.object({
   name: z.string(),
@@ -27,24 +28,35 @@ const createUserSchema = z.object({
 
 type CreateFormUser = z.infer<typeof createUserSchema>;
 
+interface FormNewUserProps extends React.ComponentProps<"div"> {
+  onOpenChange: (open: boolean) => void;
+}
+
 export function FormNewUser({
   className,
+  onOpenChange,
   ...props
-}: React.ComponentProps<"div">) {
+}: FormNewUserProps) {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationKey: ["create-user"],
     mutationFn: async ({ email, password, name }: CreateFormUser) => {
       const role = Role.User;
-      const user = await usersCreateFetch({ email, password, name, role });
+      const user = await usersCreateFetch<UserTypes>({
+        email,
+        password,
+        name,
+        role,
+      });
 
       return user;
     },
     onSuccess: (data) => {
-      console.log("Login bem-sucedido:", data);
+      console.log("Criação de Usuário bem sucedida:", data);
+      onOpenChange(false);
       queryClient.invalidateQueries({
         queryKey: ["users-data"],
-        exact: true,
+        exact: false,
       });
     },
   });

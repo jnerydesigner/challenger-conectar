@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from '@application/dtos/create-user.dto';
 import { passwordHash } from '@infra/utils/password-hash.util';
 import { UpdateUserDto } from '@application/dtos/update-user.dto';
+import { PaginationResponseDTO } from '@application/dtos/response-pagination.dto';
 
 @Injectable()
 export class UserService {
@@ -78,8 +79,26 @@ export class UserService {
     return existsUser;
   }
 
-  findAll() {
-    return this.usersRepository.find();
+  async findAll(
+    page: number = 1,
+    limit: number = 5,
+  ): Promise<PaginationResponseDTO> {
+    const [users, totalRegisters] = await this.usersRepository
+      .createQueryBuilder('user')
+      .orderBy('user.id', 'DESC')
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+
+    const total = Math.ceil(totalRegisters / limit);
+
+    return {
+      users,
+      total: totalRegisters,
+      page,
+      limit,
+      totalPages: total,
+    };
   }
 
   async update(id: number, userUpdateBody: UpdateUserDto) {
@@ -119,6 +138,8 @@ export class UserService {
         email,
       },
     });
+
+    console.log(existsUser?.password);
 
     if (!existsUser) {
       this.logger.error('User Not Found');
