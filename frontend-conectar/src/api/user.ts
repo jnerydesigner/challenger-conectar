@@ -26,6 +26,20 @@ export const usersCreateFetch = async <T = unknown>({
   return users;
 };
 
+export const usersUpdateFetch = async <T = unknown>({
+  id,
+  name,
+  email,
+  role,
+}: UserTypes): Promise<T> => {
+  const { data: users } = await api.patch<T>(`/users/${id}`, {
+    name,
+    email,
+    role,
+  });
+  return users;
+};
+
 export const userDeleteFetch = async (id: number): Promise<void> => {
   await api.delete(`/users/${id}`);
 };

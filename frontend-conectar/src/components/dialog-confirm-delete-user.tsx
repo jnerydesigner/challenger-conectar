@@ -7,24 +7,37 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+interface DialogConfirmDeleteUserProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: () => void;
+}
 
-export const DialogConfirmDeleteUser = () => {
+export const DialogConfirmDeleteUser = ({
+  open,
+  onOpenChange,
+  onConfirm,
+}: DialogConfirmDeleteUserProps) => {
   return (
-    <AlertDialog>
-      <AlertDialogTrigger>Open</AlertDialogTrigger>
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>
+            Deseja realmente deletar o usuário?
+          </AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
+            Esta ação é irreversível. O usuário será removido permanentemente do
+            sistema.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction>Continue</AlertDialogAction>
+          <AlertDialogCancel className="cursor-pointer">
+            Cancelar
+          </AlertDialogCancel>
+          <AlertDialogAction className="cursor-pointer" onClick={onConfirm}>
+            Confirmar
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
