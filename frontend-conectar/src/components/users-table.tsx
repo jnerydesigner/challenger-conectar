@@ -13,6 +13,7 @@ import { PaginationUsers } from "./pagination-users";
 import { useState } from "react";
 
 import { DynamicHeights } from "@/utils/dinamic-heights";
+import { DialogConfirmDeleteUser } from "./dialog-confirm-delete-user";
 
 export const columns: ColumnDef<UserTypes>[] = [
   {
@@ -72,6 +73,8 @@ export const columns: ColumnDef<UserTypes>[] = [
 ];
 
 export default function UsersTable() {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
   const [limitRegister] = useState(5);
@@ -83,9 +86,20 @@ export default function UsersTable() {
     },
   });
 
-  const handleDelete = (id: number) => {
-    if (confirm("Tem certeza que deseja deletar este usuário?")) {
-      deleteUserMutation.mutate(id);
+  const handleUpdateUser = (id: number) => {
+    console.log("User Updated " + id);
+  };
+
+  const handleDeleteRequest = (id: number) => {
+    setSelectedUserId(id);
+    setDialogOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (selectedUserId !== null) {
+      deleteUserMutation.mutate(selectedUserId);
+      setDialogOpen(false);
+      setSelectedUserId(null);
     }
   };
 
@@ -111,7 +125,7 @@ export default function UsersTable() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => console.log("Editar", user.id)}
+                  onClick={() => handleUpdateUser(user.id)}
                   className="cursor-pointer"
                 >
                   <Pencil className="w-4 h-4" />
@@ -119,7 +133,7 @@ export default function UsersTable() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => handleDelete(user.id)}
+                  onClick={() => handleDeleteRequest(user.id)}
                   className="cursor-pointer"
                 >
                   <Trash2 className="w-4 h-4 text-red-500" />
@@ -154,6 +168,12 @@ export default function UsersTable() {
           />
         </div>
       </div>
+
+      <DialogConfirmDeleteUser
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        onConfirm={handleConfirmDelete}
+      />
     </>
   );
 }
