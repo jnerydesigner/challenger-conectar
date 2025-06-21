@@ -14,6 +14,7 @@ import { useState } from "react";
 
 import { DynamicHeights } from "@/utils/dinamic-heights";
 import { DialogConfirmDeleteUser } from "./dialog-confirm-delete-user";
+import { DrawerUpdateUser } from "./drawer-form-update-user";
 
 export const columns: ColumnDef<UserTypes>[] = [
   {
@@ -75,6 +76,8 @@ export const columns: ColumnDef<UserTypes>[] = [
 export default function UsersTable() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<UserTypes | null>(null);
   const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
   const [limitRegister] = useState(5);
@@ -87,7 +90,11 @@ export default function UsersTable() {
   });
 
   const handleUpdateUser = (id: number) => {
-    console.log("User Updated " + id);
+    const user = data?.users.find((u) => u.id === id);
+    if (user) {
+      setSelectedUser(user);
+      setDrawerOpen(true);
+    }
   };
 
   const handleDeleteRequest = (id: number) => {
@@ -173,6 +180,11 @@ export default function UsersTable() {
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         onConfirm={handleConfirmDelete}
+      />
+      <DrawerUpdateUser
+        open={drawerOpen}
+        onOpenChange={setDrawerOpen}
+        user={selectedUser}
       />
     </>
   );
