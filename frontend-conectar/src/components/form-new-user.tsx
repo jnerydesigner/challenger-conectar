@@ -1,82 +1,104 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import Link from "next/link";
+
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import { loginFetch } from "@/api/login";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-const loginSchema = z.object({
+import { Role } from "@/types/role.enum";
+import { usersCreateFetch } from "@/api/user";
+
+const createUserSchema = z.object({
+  name: z.string(),
   email: z.string().email({ message: "E-mail inválido" }),
   password: z
     .string()
     .min(6, { message: "Senha deve ter pelo menos 6 caracteres" }),
+  role: z.string().optional(),
 });
 
-type LoginFormData = z.infer<typeof loginSchema>;
+type CreateFormUser = z.infer<typeof createUserSchema>;
 
-export function LoginForm({
+export function FormNewUser({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const router = useRouter();
-
+  const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationKey: ["login"],
-    mutationFn: async ({ email, password }: LoginFormData) => {
-      const login = await loginFetch(email, password);
+    mutationKey: ["create-user"],
+    mutationFn: async ({ email, password, name }: CreateFormUser) => {
+      const role = Role.User;
+      const user = await usersCreateFetch({ email, password, name, role });
 
-      return login;
+      return user;
     },
     onSuccess: (data) => {
       console.log("Login bem-sucedido:", data);
-      router.push("/dashboard");
+      queryClient.invalidateQueries({
+        queryKey: ["users-data"],
+        exact: true,
+      });
     },
   });
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
+  } = useForm<CreateFormUser>({
+    resolver: zodResolver(createUserSchema),
   });
 
-  function onSubmit(data: LoginFormData) {
+  function onSubmit(data: CreateFormUser) {
     console.log("Login data:", data);
-    mutation.mutate({ email: data.email, password: data.password });
-    // aqui você faria o fetch ou axios para autenticar
+    const dataComplete = {
+      ...data,
+      role: Role.User,
+    };
+    mutation.mutate({
+      email: dataComplete.email,
+      password: dataComplete.password,
+      role: dataComplete.role,
+      name: dataComplete.name,
+    });
   }
+
+  function onError(errors: any) {
+    console.log("❌ Erros de validação:", errors);
+  }
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
-        <CardHeader>
-          <CardTitle>Faça Login em sua Conta</CardTitle>
-          <CardDescription>
-            Entre com Email e Senha em sua conta
-          </CardDescription>
-        </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit(onSubmit, onError)}>
             <div className="flex flex-col gap-6">
+              <div className="grid gap-3">
+                <Label htmlFor="name">Nome</Label>
+                <Input
+                  id="name"
+                  type="name"
+                  placeholder="digite seu nome"
+                  {...register("name")}
+                />
+                {errors.name && (
+                  <span className="text-sm text-red-500">
+                    {errors.name.message}
+                  </span>
+                )}
+              </div>
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   type="email"
-                  value="jander@test.com"
                   placeholder="example@example.com"
                   {...register("email")}
                 />
@@ -89,17 +111,10 @@ export function LoginForm({
               <div className="grid gap-3">
                 <div className="flex items-center">
                   <Label htmlFor="password">Senha</Label>
-                  <a
-                    href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Recupere sua senha
-                  </a>
                 </div>
                 <Input
                   id="password"
                   type="password"
-                  value="123456"
                   {...register("password")}
                 />
                 {errors.password && (
@@ -108,21 +123,10 @@ export function LoginForm({
                   </span>
                 )}
               </div>
-              <div className="flex flex-col gap-3">
-                <Button type="submit" className="w-full cursor-pointer">
-                  Login
-                </Button>
-                <Button variant="outline" className="w-full cursor-pointer">
-                  Login with Google
-                </Button>
-              </div>
             </div>
-            <div className="mt-4 text-center text-sm">
-              Não tem conta?{" "}
-              <Link href="/register" className="underline underline-offset-4">
-                Inscreva-se
-              </Link>
-            </div>
+            <Button variant="default" className="mt-4 cursor-pointer">
+              Adicionar
+            </Button>
           </form>
         </CardContent>
       </Card>
