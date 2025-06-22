@@ -6,6 +6,8 @@ import { CreateUserDto } from '@application/dtos/create-user.dto';
 import { passwordHash } from '@infra/utils/password-hash.util';
 import { UpdateUserDto } from '@application/dtos/update-user.dto';
 import { PaginationResponseDTO } from '@application/dtos/response-pagination.dto';
+import { CreateUserGoogleDTO } from '@application/dtos/create-user-google.dto';
+import { Role } from '@application/enums/role.enum';
 
 @Injectable()
 export class UserService {
@@ -156,5 +158,47 @@ export class UserService {
     this.logger.log(JSON.stringify(existsUser));
 
     return existsUser;
+  }
+
+  async createOrUpdateUserProvider(googleUser: CreateUserGoogleDTO) {
+    const userExists = await this.findOneEmail(googleUser.emails[0].value);
+
+    if (!userExists) {
+      const user: CreateUserDto = {
+        email: googleUser.emails[0].value,
+        name: googleUser.displayName,
+        password: await passwordHash('12345678'),
+        role: Role.User,
+        pictureProvider: googleUser.photos[0].value,
+        providerId: googleUser.id,
+      };
+
+      const userCreated = await this.create(user);
+
+      return userCreated;
+    }
+
+    const user = await this.usersRepository.findOne({
+      where: {
+        email: googleUser.emails[0].value,
+      },
+    });
+
+    await this.usersRepository
+      .createQueryBuilder()
+      .update()
+      .set({
+        ...user,
+        providerId: googleUser.id,
+        pictureProvider: googleUser.photos[0].value,
+      })
+      .where('email = :email', { email: googleUser.emails[0].value })
+      .execute();
+
+    return await this.usersRepository.findOne({
+      where: {
+        email: googleUser.emails[0].value,
+      },
+    });
   }
 }

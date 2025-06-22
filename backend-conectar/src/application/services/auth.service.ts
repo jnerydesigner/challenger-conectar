@@ -1,8 +1,16 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { PayloadDTO } from '@application/dtos/payload.dto';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { env } from '@infra/constants/zod-env.constant';
+import { CreateUserGoogleDTO } from '@application/dtos/create-user-google.dto';
 
 @Injectable()
 export class AuthService {
@@ -18,7 +26,6 @@ export class AuthService {
     const user = await this.usersService.findOneLogin(username);
 
     const comparePassword = await bcrypt.compare(pass, user.password);
-    console.log('Passowrd', user.password);
 
     if (!comparePassword) {
       throw new HttpException(
@@ -31,19 +38,47 @@ export class AuthService {
       );
     }
 
-    const payload = { sub: user.id, username: user.email, role: user.role };
+    const payload: PayloadDTO = {
+      sub: user.id,
+      username: user.email,
+      role: user.role,
+      providerId: user.providerId,
+      avatar: user.pictureProvider,
+    };
 
     try {
-      const token = await this.jwtService.signAsync(payload, {
-        secret: env.JWT_SECRET,
-        expiresIn: '1d',
-      });
-      this.logger.log(token);
       return {
-        accessToken: token,
+        accessToken: await this.createToken(payload),
       };
     } catch (e) {
       this.logger.error(e);
     }
+  }
+
+  async validateGoogleUser(googleUser: CreateUserGoogleDTO) {
+    const user = await this.usersService.createOrUpdateUserProvider(googleUser);
+
+    if (!user || !googleUser.emails[0].verified) {
+      throw new NotFoundException('User Not Found');
+    }
+
+    const payload: PayloadDTO = {
+      sub: user.id,
+      username: user.email,
+      providerId: user.providerId,
+      avatar: user.pictureProvider,
+      role: user.role,
+    };
+
+    return {
+      access_token: await this.createToken(payload),
+    };
+  }
+
+  async createToken(payload: PayloadDTO) {
+    return await this.jwtService.signAsync(payload, {
+      secret: env.JWT_SECRET,
+      expiresIn: 60 * 60 * 2,
+    });
   }
 }
