@@ -54,7 +54,6 @@ export function FormNewUser({
       return user;
     },
     onSuccess: (data) => {
-      console.log("Criação de Usuário bem sucedida:", data);
       const date = new Date();
       const formatted = new Intl.DateTimeFormat("pt-BR", {
         weekday: "long",
@@ -86,7 +85,6 @@ export function FormNewUser({
   });
 
   function onSubmit(data: CreateFormUser) {
-    console.log("Login data:", data);
     const dataComplete = {
       ...data,
       role: Role.User,

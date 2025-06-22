@@ -29,12 +29,14 @@ type UpdateFormUser = z.infer<typeof updateUserSchema>;
 interface FormUpdateUserProps extends React.ComponentProps<"div"> {
   onOpenChange: (open: boolean) => void;
   user?: UserTypes | null;
+  token: string;
 }
 
 export function FormUpdateUser({
   className,
   onOpenChange,
   user,
+  token,
   ...props
 }: FormUpdateUserProps) {
   const { showToast } = useToast();
@@ -48,12 +50,12 @@ export function FormUpdateUser({
         name,
         role,
         id: user?.id,
+        token,
       });
 
       return userResponse;
     },
     onSuccess: (data) => {
-      console.log("Criação de Usuário bem sucedida:", data);
       const date = new Date();
       const formatted = new Intl.DateTimeFormat("pt-BR", {
         weekday: "long",
@@ -90,7 +92,6 @@ export function FormUpdateUser({
   });
 
   function onSubmit(data: UpdateFormUser) {
-    console.log("Login data:", data);
     const dataComplete = {
       ...data,
       role: Role.User,

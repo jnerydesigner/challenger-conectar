@@ -37,9 +37,17 @@ export function LoginForm({
   const mutation = useMutation({
     mutationKey: ["login"],
     mutationFn: async ({ email, password }: LoginFormData) => {
-      const login = await loginFetch(email, password);
+      const { accessToken } = await loginFetch(email, password);
 
-      return login;
+      await fetch("/api/set-token", {
+        method: "POST",
+        body: JSON.stringify({ token: accessToken }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      return accessToken;
     },
     onSuccess: (data) => {
       console.log("Login bem-sucedido:", data);
@@ -76,7 +84,7 @@ export function LoginForm({
                 <Input
                   id="email"
                   type="email"
-                  value="jander@test.com"
+                  value="jander.webmaster@gmail.com"
                   placeholder="example@example.com"
                   {...register("email")}
                 />

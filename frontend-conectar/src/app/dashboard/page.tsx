@@ -18,7 +18,7 @@ export default async function Dashboard() {
           <div>
             <DrawerTriggerClient />
           </div>
-          <UsersTable />
+          <UsersTable token={token.value} />
         </div>
       </main>
     </>

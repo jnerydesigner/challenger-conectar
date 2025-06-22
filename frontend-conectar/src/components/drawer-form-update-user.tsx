@@ -26,12 +26,14 @@ interface DrawerUpdateUserProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   user?: UserTypes | null;
+  token: string;
 }
 
 export const DrawerUpdateUser = ({
   open,
   user,
   onOpenChange,
+  token,
 }: DrawerUpdateUserProps) => {
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
@@ -43,7 +45,11 @@ export const DrawerUpdateUser = ({
             <DialogTitle>Editar usuário</DialogTitle>
             <DialogDescription>Atualize os dados do usuário.</DialogDescription>
           </DialogHeader>
-          <FormUpdateUser onOpenChange={onOpenChange} user={user} />
+          <FormUpdateUser
+            onOpenChange={onOpenChange}
+            user={user}
+            token={token}
+          />
         </DialogContent>
       </Dialog>
     );
@@ -56,7 +62,7 @@ export const DrawerUpdateUser = ({
           <DrawerTitle>Editar usuário</DrawerTitle>
           <DrawerDescription>Atualize os dados do usuário.</DrawerDescription>
         </DrawerHeader>
-        <FormUpdateUser onOpenChange={onOpenChange} user={user} />
+        <FormUpdateUser onOpenChange={onOpenChange} user={user} token={token} />
         <DrawerFooter>
           <DrawerClose asChild>
             <Button variant="outline" className="ml-4 cursor-pointer">
