@@ -7,6 +7,9 @@ import { AppController } from '@presenters/app.controller';
 import { HealthCheckModule } from './health-check.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user.module';
+import { env } from '@infra/constants/zod-env.constant';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from '@infra/auth/guards/jwt.guard';
 
 @Module({
   imports: [
@@ -15,20 +18,26 @@ import { UserModule } from './user.module';
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
-      port: 5448,
-      username: 'root',
-      password: '123456',
-      database: 'conectar_db',
+      host: env.DATABASE_HOST_NAME,
+      port: env.DATABASE_PORT,
+      username: env.DATABASE_USERNAME,
+      password: env.DATABASE_PASSWORD,
+      database: env.DATABASE_DB_NAME,
       synchronize: true,
       autoLoadEntities: true,
-      logging: true,
+      logging: false,
     }),
     UserModule,
     HealthCheckModule,
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule {}

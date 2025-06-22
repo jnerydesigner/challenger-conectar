@@ -22,6 +22,12 @@ export class Users {
   @Column()
   password: string;
 
+  @Column({ nullable: true })
+  pictureProvider?: string;
+
+  @Column({ nullable: true })
+  providerId?: string;
+
   @Column({ type: 'varchar', default: 'user' })
   role!: UserRole;
 

@@ -17,5 +17,30 @@
         "titleBar.activeForeground": "#e7e7e7",
         "titleBar.inactiveBackground": "#e0234e99",
         "titleBar.inactiveForeground": "#e7e7e799"
-    }
+    },
+    "cSpell.words": [
+        "ação",
+        "Atualização",
+        "Atualizar",
+        "caracteres",
+        "Confirmar",
+        "Criação",
+        "criado",
+        "deletar",
+        "Deseja",
+        "Erros",
+        "Esta",
+        "feita",
+        "irreversível",
+        "menos",
+        "pelo",
+        "permanentemente",
+        "realmente",
+        "removido",
+        "Senha",
+        "será",
+        "sucedida",
+        "usuário",
+        "validação"
+    ]
 }

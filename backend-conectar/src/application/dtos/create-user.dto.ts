@@ -13,4 +13,13 @@ export class CreateUserDto {
 
   @ApiProperty({ example: 'user', description: 'Insert Role admin or user' })
   role?: UserRole;
+
+  @ApiProperty({ example: 'picture', description: 'Insert Role admin or user' })
+  pictureProvider?: string;
+
+  @ApiProperty({
+    example: 'provider',
+    description: 'Insert Role admin or user',
+  })
+  providerId?: string;
 }

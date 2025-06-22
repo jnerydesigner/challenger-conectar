@@ -15,7 +15,9 @@ export default async function Dashboard() {
     <>
       <main className="w-full min-h-screen bg-gray-100 py-10 px-4 md:px-12">
         <div className="mx-auto max-w-6xl bg-white shadow-md rounded-xl p-6 space-y-6">
-          <DrawerTriggerClient />
+          <div>
+            <DrawerTriggerClient />
+          </div>
           <UsersTable />
         </div>
       </main>

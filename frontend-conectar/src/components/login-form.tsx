@@ -112,8 +112,15 @@ export function LoginForm({
                 <Button type="submit" className="w-full cursor-pointer">
                   Login
                 </Button>
-                <Button variant="outline" className="w-full cursor-pointer">
-                  Login with Google
+
+                <Button
+                  variant="outline"
+                  className="w-full cursor-pointer"
+                  asChild
+                >
+                  <Link href="http://localhost:3445/auth/google/login">
+                    Login with Google
+                  </Link>
                 </Button>
               </div>
             </div>
