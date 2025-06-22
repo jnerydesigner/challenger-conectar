@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { DrawerCreateUser } from "@/components/drawer-form-create-user";
+import { DrawerOrDialogCreateUser } from "@/components/drawer-form-create-user";
 
 export const DrawerTriggerClient = () => {
   const [open, setOpen] = useState(false);
@@ -15,7 +15,7 @@ export const DrawerTriggerClient = () => {
         </Button>
       </div>
 
-      <DrawerCreateUser open={open} onOpenChange={setOpen} />
+      <DrawerOrDialogCreateUser open={open} onOpenChange={setOpen} />
     </>
   );
 };

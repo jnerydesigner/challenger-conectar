@@ -1,4 +1,15 @@
+"use client";
+
+import * as React from "react";
+import { useMediaQuery } from "@/hooks/use-media-query";
 import { UserTypes } from "@/types/user.types";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "./ui/dialog";
 import {
   Drawer,
   DrawerClose,
@@ -22,6 +33,22 @@ export const DrawerUpdateUser = ({
   user,
   onOpenChange,
 }: DrawerUpdateUserProps) => {
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+
+  if (isDesktop) {
+    return (
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Editar usuário</DialogTitle>
+            <DialogDescription>Atualize os dados do usuário.</DialogDescription>
+          </DialogHeader>
+          <FormUpdateUser onOpenChange={onOpenChange} user={user} />
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent>

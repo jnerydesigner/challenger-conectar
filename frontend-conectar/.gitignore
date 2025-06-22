@@ -1,5 +1,8 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+.vscode/
+.vscode/settings.json
+
 # dependencies
 /node_modules
 /.pnp
@@ -41,7 +44,7 @@ yarn-error.log*
 next-env.d.ts
 
 # IDE - VSCode
-.vscode/*
+.vscode/
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
