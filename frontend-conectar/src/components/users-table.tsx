@@ -73,7 +73,11 @@ export const columns: ColumnDef<UserTypes>[] = [
   },
 ];
 
-export default function UsersTable() {
+interface UsersTableProps {
+  token: string;
+}
+
+export default function UsersTable({ token }: UsersTableProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -83,7 +87,7 @@ export default function UsersTable() {
   const [limitRegister] = useState(5);
 
   const deleteUserMutation = useMutation({
-    mutationFn: (id: number) => userDeleteFetch(id),
+    mutationFn: (id: number) => userDeleteFetch(id, token as string),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users-data"] });
     },
@@ -116,7 +120,8 @@ export default function UsersTable() {
       const [, currentPage, limitRegister] = queryKey;
       return usersFetch<PaginationResponseDTO>(
         currentPage as number,
-        limitRegister as number
+        limitRegister as number,
+        token as string
       );
     },
   });
@@ -185,6 +190,7 @@ export default function UsersTable() {
         open={drawerOpen}
         onOpenChange={setDrawerOpen}
         user={selectedUser}
+        token={token}
       />
     </>
   );

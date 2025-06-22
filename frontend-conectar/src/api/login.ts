@@ -6,7 +6,7 @@ export const loginFetch = async (username: string, password: string) => {
     password,
   });
 
-  console.log(response);
+  console.log("loginFetch", response);
 
   return response.data;
 };

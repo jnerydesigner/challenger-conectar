@@ -6,7 +6,7 @@ export interface PaginationResponseDTO {
   totalPages: number;
 }
 
-export interface UserTypes {
+export interface UserTypes extends UserProps {
   id?: number;
   name: string;
   email: string;
@@ -14,4 +14,8 @@ export interface UserTypes {
   role: string;
   createdAt?: Date;
   updatedAt?: Date;
+}
+
+export interface UserProps {
+  token?: string;
 }
