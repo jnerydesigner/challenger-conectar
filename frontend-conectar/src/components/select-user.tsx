@@ -28,11 +28,6 @@ export function SelectScrollableUser({ user }: SelectScrollableUserProps) {
             Atualizar Seus Dados
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href={`/user/password/${user.id}`} className="cursor-pointer">
-            Mudar Senha
-          </Link>
-        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
