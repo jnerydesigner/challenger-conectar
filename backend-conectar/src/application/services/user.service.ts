@@ -63,6 +63,7 @@ export class UserService {
         id,
       },
     });
+    console.log('Efetuou o FindOne', existsUser);
 
     if (!existsUser) {
       this.logger.error('User Not Found');
