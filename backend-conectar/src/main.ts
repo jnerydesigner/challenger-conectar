@@ -10,7 +10,7 @@ import { env } from '@infra/constants/zod-env.constant';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: env.URL_FRONT_END,
+    origin: env.FRONT_URL,
   });
   app.use(cookieParser());
   const config = new ConfigService();
