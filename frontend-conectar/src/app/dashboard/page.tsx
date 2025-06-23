@@ -18,6 +18,8 @@ export default async function Dashboard() {
     cookieStore.get("user_data")?.value as string
   ) as UserDataCookie;
 
+  console.log(data);
+
   if (!data.access_token) {
     redirect("/login");
   } else if (data.role === "user") {
