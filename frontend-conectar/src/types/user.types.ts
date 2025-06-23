@@ -12,6 +12,8 @@ export interface UserTypes extends UserProps {
   email: string;
   password?: string;
   role: string;
+  providerId?: string | null;
+  pictureProvider?: string | null;
   createdAt?: Date;
   updatedAt?: Date;
 }

@@ -48,7 +48,12 @@ export class AuthService {
 
     try {
       return {
-        accessToken: await this.createToken(payload),
+        id: user.id,
+        username: user.email,
+        avatar: user.pictureProvider,
+        role: user.role,
+        name: user.name,
+        access_token: await this.createToken(payload),
       };
     } catch (e) {
       this.logger.error(e);
@@ -71,6 +76,11 @@ export class AuthService {
     };
 
     return {
+      id: user.id,
+      username: user.email,
+      avatar: user.pictureProvider,
+      role: user.role,
+      name: user.name,
       access_token: await this.createToken(payload),
     };
   }
