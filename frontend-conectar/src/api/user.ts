@@ -4,16 +4,31 @@ import { api } from "./axios-api";
 export const usersFetch = async <T = unknown>(
   page: number,
   limit: number,
-  token: string
+  token: string,
+  role: string,
+  field: string,
+  direction: string
 ): Promise<T> => {
-  const { data: users } = await api.get<T>(
-    `/users?page=${page}&limit=${limit}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  let url = `/users?page=${page}&limit=${limit}`;
+
+  console.log("Url do axios", url);
+  if (role !== "") {
+    url = url + `&role=${role}`;
+  }
+  if (field) {
+    url = url + `&field=${field}`;
+  }
+  if (direction) {
+    url = url + `&direction=${direction}`;
+  }
+
+  console.log("Formando a url", url);
+
+  const { data: users } = await api.get<T>(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   return users;
 };
 

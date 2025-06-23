@@ -13,13 +13,18 @@ import {
   Post,
   Req,
   Res,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { Request, Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   @Public()
   @Post('login')
@@ -43,8 +48,36 @@ export class AuthController {
   @Public()
   @Get('google/callback')
   googleCallback(@Req() req: Request, @Res() res: Response) {
-    console.log(`${env.FRONT_URL}/dashboard?token=${req.user}`);
+    console.log(
+      'Essa é a url de callback: ' +
+        `${env.FRONT_URL}/callback?token=${req.user}`,
+    );
 
-    res.redirect(`${env.FRONT_URL}/login?token=${req.user}`);
+    console.log('Requ User', req.user);
+
+    const url = `${env.FRONT_URL}/callback?token=${req.user}`;
+
+    res.redirect(url);
+  }
+
+  @Get('me')
+  async getProfile(@Req() req: Request) {
+    const token = req.headers.authorization?.split(' ')[1];
+
+    if (!token) {
+      throw new UnauthorizedException('Token não fornecido.');
+    }
+
+    try {
+      const decoded = await this.jwtService.verifyAsync(token, {
+        secret: env.JWT_SECRET,
+      });
+
+      return decoded;
+    } catch (err: any) {
+      throw new UnauthorizedException(
+        'Token inválido ou expirado. ' + JSON.stringify(err),
+      );
+    }
   }
 }

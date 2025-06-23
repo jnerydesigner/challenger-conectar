@@ -7,6 +7,12 @@ import { redirect } from "next/navigation";
 
 export default async function Dashboard() {
   const cookieStore = await cookies();
+  console.log(cookieStore);
+  const isValidCookie = cookieStore.get("user_data");
+
+  if (!isValidCookie) {
+    redirect("/login");
+  }
 
   const data = JSON.parse(
     cookieStore.get("user_data")?.value as string

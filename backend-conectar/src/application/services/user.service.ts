@@ -8,6 +8,7 @@ import { UpdateUserDto } from '@application/dtos/update-user.dto';
 import { PaginationResponseDTO } from '@application/dtos/response-pagination.dto';
 import { CreateUserGoogleDTO } from '@application/dtos/create-user-google.dto';
 import { Role } from '@application/enums/role.enum';
+import { DirectionEnum } from '@application/enums/direction.enum';
 
 @Injectable()
 export class UserService {
@@ -63,7 +64,6 @@ export class UserService {
         id,
       },
     });
-    console.log('Efetuou o FindOne', existsUser);
 
     if (!existsUser) {
       this.logger.error('User Not Found');
@@ -85,22 +85,37 @@ export class UserService {
   async findAll(
     page: number = 1,
     limit: number = 5,
+    direction: 'ASC' | 'DESC',
+    field: string,
+    role: string,
   ): Promise<PaginationResponseDTO> {
-    const [users, totalRegisters] = await this.usersRepository
-      .createQueryBuilder('user')
-      .orderBy('user.id', 'DESC')
+    const qb = this.usersRepository.createQueryBuilder('user');
+
+    if (role || role === null) {
+      qb.where('user.role = :role', { role });
+    }
+
+    if (field && direction) {
+      qb.orderBy(`user.${field}`, DirectionEnum[direction]);
+    } else {
+      qb.orderBy(`user.id`, 'DESC');
+    }
+
+    const [users, totalRegisters] = await qb
       .skip((page - 1) * limit)
       .take(limit)
       .getManyAndCount();
 
-    const total = Math.ceil(totalRegisters / limit);
+    const totalPages = Math.ceil(totalRegisters / limit);
+
+    console.log(totalPages);
 
     return {
       users,
       total: totalRegisters,
       page,
       limit,
-      totalPages: total,
+      totalPages,
     };
   }
 
@@ -141,8 +156,6 @@ export class UserService {
         email,
       },
     });
-
-    console.log(existsUser?.password);
 
     if (!existsUser) {
       this.logger.error('User Not Found');

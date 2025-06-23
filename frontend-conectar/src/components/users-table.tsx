@@ -15,6 +15,12 @@ import { useState } from "react";
 import { DynamicHeights } from "@/utils/dinamic-heights";
 import { DialogConfirmDeleteUser } from "./dialog-confirm-delete-user";
 import { DrawerUpdateUser } from "./drawer-form-update-user";
+import { SelectFilter } from "./select-filter";
+import {
+  directionOptions,
+  fieldOptions,
+  roleOptions,
+} from "@/utils/filters-object";
 
 export const columns: ColumnDef<UserTypes>[] = [
   {
@@ -78,6 +84,9 @@ interface UsersTableProps {
 }
 
 export default function UsersTable({ token }: UsersTableProps) {
+  const [roleFilter, setRoleFilter] = useState<string>("");
+  const [fieldFilter, setFieldFilter] = useState<string>("id");
+  const [directionFilter, setDirectionFilter] = useState<string>("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -115,13 +124,26 @@ export default function UsersTable({ token }: UsersTableProps) {
   };
 
   const { data, isLoading } = useQuery({
-    queryKey: ["users-data", page, limitRegister],
+    queryKey: [
+      "users-data",
+      page,
+      limitRegister,
+      roleFilter,
+      fieldFilter,
+      directionFilter,
+    ],
     queryFn: ({ queryKey }) => {
       const [, currentPage, limitRegister] = queryKey;
+      console.log("Filtro de Role", roleFilter);
+      console.log("Filtro de Field", fieldFilter);
+      console.log("Filtro de Direção", directionFilter);
       return usersFetch<PaginationResponseDTO>(
         currentPage as number,
         limitRegister as number,
-        token as string
+        token as string,
+        roleFilter || "",
+        fieldFilter || "",
+        directionFilter
       );
     },
   });
@@ -166,8 +188,40 @@ export default function UsersTable({ token }: UsersTableProps) {
       <h1 className="text-2xl font-bold text-gray-800 mb-4">Users Table</h1>
       <div
         className="relative flex flex-col border rounded-md bg-white shadow"
-        style={{ height: `${DynamicHeights(limitRegister)}px` }}
+        style={{ height: `${DynamicHeights(limitRegister + 2)}px` }}
       >
+        <div className="h-12 mt-2 mb-4 flex justify-end gap-4 px-4">
+          <SelectFilter
+            options={roleOptions}
+            value={roleFilter}
+            onChange={(value) => setRoleFilter(value)}
+            placeholder="Todas as roles"
+          />
+
+          <SelectFilter
+            options={fieldOptions}
+            value={fieldFilter}
+            onChange={(value) => setFieldFilter(value)}
+            placeholder="Todos os Campos"
+          />
+
+          <SelectFilter
+            options={directionOptions}
+            value={directionFilter}
+            onChange={(value) => setDirectionFilter(value)}
+            placeholder="Direção Decrescente"
+          />
+
+          <select
+            className="border border-gray-300 rounded px-3 py-2 text-sm"
+            value={directionFilter}
+            onChange={(e) => setDirectionFilter(e.target.value)}
+          >
+            <option value="DESC">Direção</option>
+            <option value="ASC">Crescente</option>
+            <option value="DESC">Decrescente</option>
+          </select>
+        </div>
         <div className="overflow-y-auto px-4 pt-4 pb-20">
           <DataTable columns={columnsWithDelete} data={data?.users ?? []} />
         </div>

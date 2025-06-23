@@ -42,6 +42,7 @@ export class AuthService {
       sub: user.id,
       username: user.email,
       role: user.role,
+      name: user.name,
       providerId: user.providerId,
       avatar: user.pictureProvider,
     };
@@ -62,6 +63,7 @@ export class AuthService {
 
   async validateGoogleUser(googleUser: CreateUserGoogleDTO) {
     const user = await this.usersService.createOrUpdateUserProvider(googleUser);
+    this.logger.log(JSON.stringify(user));
 
     if (!user || !googleUser.emails[0].verified) {
       throw new NotFoundException('User Not Found');
@@ -70,12 +72,14 @@ export class AuthService {
     const payload: PayloadDTO = {
       sub: user.id,
       username: user.email,
+      name: user.name,
       providerId: user.providerId,
       avatar: user.pictureProvider,
       role: user.role,
     };
+    this.logger.log(JSON.stringify(payload));
 
-    return {
+    const userResponse = {
       id: user.id,
       username: user.email,
       avatar: user.pictureProvider,
@@ -83,6 +87,10 @@ export class AuthService {
       name: user.name,
       access_token: await this.createToken(payload),
     };
+
+    this.logger.log(JSON.stringify(userResponse));
+
+    return userResponse;
   }
 
   async createToken(payload: PayloadDTO) {

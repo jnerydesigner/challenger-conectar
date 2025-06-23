@@ -3,6 +3,7 @@ import { UserDataCookie } from "@/types/user-data-cookie";
 import { UserTypes } from "@/types/user.types";
 
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import React from "react";
 
 interface Props {
@@ -11,6 +12,11 @@ interface Props {
 
 export default async function UpdateUserPage({ params }: Props) {
   const cookieStore = await cookies();
+  const isValidCookie = cookieStore.get("user_data");
+
+  if (!isValidCookie) {
+    redirect("/login");
+  }
   const data = JSON.parse(
     cookieStore.get("user_data")?.value as string
   ) as UserDataCookie;
