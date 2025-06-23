@@ -58,7 +58,7 @@ pipeline {
 
                                 pm2 update
 
-                                pm2 start "yarn start" --name backend-conectar --watch
+                               pm2 start "node dist/src/main" --name backend-conectar --watch
                             '
                         """
                     }
