@@ -15,7 +15,6 @@ async function bootstrap() {
     const exists = await userService.findOneEmail(user.email);
     if (!exists) {
       await userService.create(user);
-      console.log(`✅ Created: ${user.email}`);
     } else {
       console.log(`⚠️ Skipped (already exists): ${user.email}`);
     }

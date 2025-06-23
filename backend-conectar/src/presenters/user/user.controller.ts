@@ -19,12 +19,14 @@ import { PaginationQueryDTO } from '@application/dtos/pagination.dto';
 import { RoleGuard } from '@infra/auth/guards/role.guard';
 import { Role } from '@application/enums/role.enum';
 import { Roles } from '@infra/decorators/roles.decorator';
+import { Public } from '@infra/decorators/public.decorator';
 
 @ApiTags('Users')
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @Public()
   @Post()
   create(@Body() body: CreateUserDto) {
     return this.userService.create(body);
@@ -34,10 +36,17 @@ export class UserController {
   @Roles(Role.Admin)
   @Get()
   findAll(@Query() query: PaginationQueryDTO) {
-    return this.userService.findAll(
-      parseInt(query.page),
-      parseInt(query.limit),
-    );
+    try {
+      return this.userService.findAll(
+        parseInt(query.page),
+        parseInt(query.limit),
+        query.direction || 'ASC',
+        query.field || '',
+        query.role || '',
+      );
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   @ApiParam({

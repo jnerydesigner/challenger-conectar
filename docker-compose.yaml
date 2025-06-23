@@ -16,6 +16,8 @@ services:
     networks:
       - postgres
     restart: unless-stopped
+    env_file:
+      - .env
 
   pgadmin_conectar:
     container_name: pgadmin_conectar
