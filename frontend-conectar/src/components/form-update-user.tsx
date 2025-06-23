@@ -44,11 +44,9 @@ export function FormUpdateUser({
   const mutation = useMutation({
     mutationKey: ["update-user"],
     mutationFn: async ({ email, name }: UpdateFormUser) => {
-      const role = Role.User;
       const userResponse = await usersUpdateFetch<UserTypes>({
         email,
         name,
-        role,
         id: user?.id,
         token,
       });

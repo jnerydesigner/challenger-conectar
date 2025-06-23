@@ -60,7 +60,6 @@ export const usersUpdateFetch = async <T = unknown>({
   id,
   name,
   email,
-  role,
   token,
 }: UserTypes): Promise<T> => {
   const { data: users } = await api.patch<T>(
@@ -68,7 +67,6 @@ export const usersUpdateFetch = async <T = unknown>({
     {
       name,
       email,
-      role,
     },
     {
       headers: {
