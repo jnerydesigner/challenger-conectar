@@ -10,12 +10,15 @@ export default function CallbackPage() {
 
   useEffect(() => {
     const tokenDecoded = async (token: string) => {
-      const response = await fetch(`http://localhost:3445/auth/me`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/me`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       const user: PayloadDecrypted = await response.json();
 

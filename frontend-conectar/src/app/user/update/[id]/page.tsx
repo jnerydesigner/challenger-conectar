@@ -22,13 +22,16 @@ export default async function UpdateUserPage({ params }: Props) {
   ) as UserDataCookie;
 
   const { id } = await params;
-  const response = await fetch(`http://localhost:3445/users/${id}`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${data.access_token}`,
-    },
-    cache: "no-store",
-  });
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/users/${id}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${data.access_token}`,
+      },
+      cache: "no-store",
+    }
+  );
 
   const user: UserTypes = await response.json();
 

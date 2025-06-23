@@ -128,7 +128,9 @@ export function LoginForm({
                   className="w-full cursor-pointer"
                   asChild
                 >
-                  <Link href="http://localhost:3445/auth/google/login">
+                  <Link
+                    href={`${process.env.NEXT_PUBLIC_API_URL}/auth/google/login`}
+                  >
                     Login with Google
                   </Link>
                 </Button>
