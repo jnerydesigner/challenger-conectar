@@ -80,7 +80,7 @@ pipeline {
                                 node -v
                                 yarn -v
 
-                                cd /var/lib/jenkins/workspace/Conectar/front-sangue-doce
+                                cd /var/lib/jenkins/workspace/Conectar/frontend-conectar
 
                                 echo "Alterações detectadas, rodando o deploy"
                                 yarn install
