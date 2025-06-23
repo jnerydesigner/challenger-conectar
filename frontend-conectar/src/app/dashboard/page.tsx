@@ -21,10 +21,10 @@ export default async function Dashboard() {
   console.log(data);
 
   if (!data.access_token) {
-    console.log(data);
+    console.log("!data.access_token", data);
     redirect("/login");
   } else if (data.role === "user") {
-    console.log(data);
+    console.log("data.role === user", data);
     redirect("/");
   }
   return (
