@@ -69,34 +69,34 @@ pipeline {
 
 
 
-        // stage('Deploy com PM2 do Next') {
-        //     steps {
-        //         script {
-        //             withCredentials([string(credentialsId: 'SSH_PASSWORD', variable: 'SSH_PASSWORD')]) {
-        //                 sh """
-        //                     sshpass -p '${SSH_PASSWORD}' ssh -o StrictHostKeyChecking=no root@deploy-server '
-        //                         export PATH=/var/lib/jenkins/tools/jenkins.plugins.nodejs.tools.NodeJSInstallation/NodeJS_22/bin:$PATH
+        stage('Deploy com PM2 do Next') {
+            steps {
+                script {
+                    withCredentials([string(credentialsId: 'SSH_PASSWORD', variable: 'SSH_PASSWORD')]) {
+                        sh """
+                            sshpass -p '${SSH_PASSWORD}' ssh -o StrictHostKeyChecking=no root@deploy-server '
+                                export PATH=/var/lib/jenkins/tools/jenkins.plugins.nodejs.tools.NodeJSInstallation/NodeJS_22/bin:$PATH
 
-        //                         node -v
-        //                         yarn -v
+                                node -v
+                                yarn -v
 
-        //                         cd /var/lib/jenkins/workspace/SangueDoce/front-sangue-doce
+                                cd /var/lib/jenkins/workspace/Conectar/front-sangue-doce
 
-        //                         echo "Alterações detectadas, rodando o deploy"
-        //                         yarn install
-        //                         yarn build
+                                echo "Alterações detectadas, rodando o deploy"
+                                yarn install
+                                yarn build
 
-        //                         pm2 delete front-sangue-doce
+                                pm2 delete front-conectar
                                 
-        //                         pm2 update
+                                pm2 update
                                 
-        //                         pm2 start "yarn start" --name front-sangue-doce --watch
-        //                     '
-        //                 """
-        //             }
-        //         }
-        //     }
-        // }
+                                pm2 start "yarn start" --name front-conectar --watch
+                            '
+                        """
+                    }
+                }
+            }
+        }
 
         stage('Send Mail Deploy Success') {
             steps {
